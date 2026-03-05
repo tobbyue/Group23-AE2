@@ -1,0 +1,119 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam sequenceArrowThickness 1.5
+skinparam roundcorner 8
+skinparam maxmessagesize 220
+
+skinparam participant {
+  BackgroundColor #2C3E50
+  FontColor white
+  BorderColor #1A5276
+  FontSize 13
+}
+
+skinparam sequence {
+  LifeLineBorderColor #2E86C1
+  LifeLineBackgroundColor #EAF2F8
+  ArrowColor #2C3E50
+  DividerBackgroundColor #D5E8D4
+  DividerBorderColor #82B366
+  GroupBackgroundColor #F4F6F7
+  GroupBorderColor #BDC3C7
+}
+
+title **Sequence Diagram: Arrange Training for Part-Time Teacher**\n(User Story — Minghao Yue, Group 23)
+
+actor "Administrator" as Admin
+participant "MenuController" as Menu
+participant "TrainingManager" as TM
+participant "Training" as T
+participant "Teacher" as Teach
+participant "DataStore\n(FileHandler)" as DS
+
+== 1. Create a New Training Session ==
+
+Admin -> Menu : select "Manage Training"
+activate Menu
+
+Menu -> Admin : prompt training details\n(name, date, skill)
+Admin -> Menu : enter "Java Refresher",\n"2026-03-10", "Java"
+
+Menu -> TM : createTraining("Java Refresher",\n"2026-03-10", "Java")
+activate TM
+TM -> TM : generateNextId() → 3
+TM -> T ** : new Training(3, "Java Refresher",\n"2026-03-10", "Java", [])
+TM -> TM : trainings.add(training)
+TM --> Menu : return training
+deactivate TM
+
+Menu -> Admin : "Training created (ID 3)"
+
+== 2. Assign a Teacher to the Training ==
+
+Menu -> Admin : prompt teacher ID
+Admin -> Menu : enter teacherId = 1
+
+Menu -> TM : assignTeacher(trainingId=3,\nteacherId=1)
+activate TM
+
+TM -> TM : findTrainingById(3) → training
+TM -> TM : findTeacherById(1) → teacher
+
+alt Teacher already enrolled
+    TM --> Menu : return false\n("already enrolled")
+else Teacher not yet enrolled
+    TM -> T : addParticipant(1)
+    activate T
+    T -> T : participantIds.add(1)
+    T --> TM : done
+    deactivate T
+    TM --> Menu : return true
+end
+
+deactivate TM
+
+Menu -> Admin : "Teacher 'John Smith'\nassigned to training"
+
+== 3. Complete Training & Update Skills ==
+
+Admin -> Menu : select "Complete Training"
+Menu -> Admin : prompt training ID
+Admin -> Menu : enter trainingId = 3
+
+Menu -> TM : updateTeacherSkills(3)
+activate TM
+
+TM -> TM : findTrainingById(3) → training
+
+loop for each participantId in training
+    TM -> TM : findTeacherById(pid) → teacher
+    alt Teacher does NOT have the skill
+        TM -> Teach : getSkills().add("Java")
+        activate Teach
+        Teach --> TM : skill added
+        deactivate Teach
+    else Teacher already has the skill
+        TM -> TM : skip (no update needed)
+    end
+end
+
+TM --> Menu : return updatedCount
+deactivate TM
+
+Menu -> Admin : "1 teacher(s) gained\nthe skill 'Java'"
+
+== 4. Save on Exit ==
+
+Admin -> Menu : select "Exit"
+
+Menu -> DS : saveAll(teachers, requirements,\ntrainings, allocations)
+activate DS
+DS -> DS : write trainings.csv
+DS -> DS : write teachers.csv (updated skills)
+DS --> Menu : save complete
+deactivate DS
+
+Menu -> Admin : "Data saved. Goodbye!"
+deactivate Menu
+
+@enduml

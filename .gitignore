@@ -1,0 +1,25 @@
+# Compiled class files
+*.class
+out/
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Do NOT ignore data/ — sample CSV files should be tracked

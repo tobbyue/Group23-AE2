@@ -52,10 +52,26 @@ public class Training {
 
     // ---------- Convenience ----------
 
+    /** Add a teacher to this training (no duplicates). */
     public void addParticipant(int teacherId) {
         if (!participantIds.contains(teacherId)) {
             participantIds.add(teacherId);
         }
+    }
+
+    /** Remove a teacher from this training. Returns true if removed. */
+    public boolean removeParticipant(int teacherId) {
+        return participantIds.remove(Integer.valueOf(teacherId));
+    }
+
+    /** Check whether a teacher is enrolled in this training. */
+    public boolean hasParticipant(int teacherId) {
+        return participantIds.contains(teacherId);
+    }
+
+    /** Return the number of participants. */
+    public int getParticipantCount() {
+        return participantIds.size();
     }
 
     /** Semicolon-joined participant IDs for CSV output. */

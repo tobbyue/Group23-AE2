@@ -10,7 +10,10 @@ import java.util.List;
  *   3. Hand control to MenuController for user interaction
  *   4. On exit, save all data back to files
  *
- * TODO (Tianxin Han): implement the main method and program lifecycle
+ * Design note: App uses the DataStore interface (not FileHandler directly),
+ * so switching to a database only requires changing one line here.
+ *
+ * TODO (Tianxin Han): integrate all managers into MenuController
  *
  * @author Tianxin Han (Group 23)
  */
@@ -18,6 +21,8 @@ public class App {
 
     public static void main(String[] args) {
         // --- 1. Initialise data store ---
+        // To switch to a database in future, only change this line:
+        //   DataStore dataStore = new DatabaseHandler();
         DataStore dataStore = new FileHandler();
 
         // --- 2. Load all data into memory ---
@@ -34,13 +39,14 @@ public class App {
         System.out.println("  Allocations:  " + allocations.size());
 
         // --- 3. Create managers ---
-        // TODO: pass data lists to your managers, e.g.:
-        // TeacherManager teacherMgr = new TeacherManager(teachers);
-        // RequirementManager reqMgr = new RequirementManager(requirements);
-        // StaffAllocator allocator = new StaffAllocator(teachers, requirements, allocations);
+        TeacherManager teacherMgr = new TeacherManager(teachers);
+        RequirementManager reqMgr = new RequirementManager(requirements);
+        TrainingManager trainingMgr = new TrainingManager(trainings, teachers);
+        StaffAllocator allocator = new StaffAllocator(teachers, requirements, allocations);
 
         // --- 4. Start interactive menu ---
-        // TODO: MenuController menu = new MenuController(...);
+        // TODO (Tianxin): pass all managers to MenuController
+        // MenuController menu = new MenuController(teacherMgr, reqMgr, trainingMgr, allocator);
         // menu.run();
 
         System.out.println("\n[Placeholder] Menu not yet implemented. Exiting...");
