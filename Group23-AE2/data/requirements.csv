@@ -1,0 +1,4 @@
+id,courseName,semester,requiredSkill,dayOfWeek,status
+1,Intro to Java,2026-S1,Java,Mon,OPEN
+2,Database Systems,2026-S1,SQL,Wed,ASSIGNED
+3,Advanced Python,2026-S2,Python,Fri,OPEN
