@@ -1,0 +1,242 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam classAttributeIconSize 0
+skinparam roundcorner 8
+skinparam shadowing false
+skinparam linetype ortho
+
+skinparam class {
+  BackgroundColor #F8F9FA
+  BorderColor #2C3E50
+  ArrowColor #2C3E50
+  FontSize 13
+  HeaderBackgroundColor #2C3E50
+  HeaderFontColor white
+  StereotypeFontSize 10
+}
+
+title **Group 23 — Part-Time Teacher Management System\nClass Structure Diagram**
+
+' ============================================================
+'  INTERFACE
+' ============================================================
+
+interface DataStore <<interface>> {
+  +loadTeachers(): List<Teacher>
+  +saveTeachers(teachers: List<Teacher>): void
+  +loadRequirements(): List<TeachingRequirement>
+  +saveRequirements(requirements: List<TeachingRequirement>): void
+  +loadTrainings(): List<Training>
+  +saveTrainings(trainings: List<Training>): void
+  +loadAllocations(): List<Allocation>
+  +saveAllocations(allocations: List<Allocation>): void
+  +loadAll(teachers, requirements, trainings, allocations): void
+  +saveAll(teachers, requirements, trainings, allocations): void
+}
+
+' ============================================================
+'  FILE HANDLER (implements DataStore)
+' ============================================================
+
+class FileHandler {
+  -DATA_DIR: String {static}
+  -TEACHERS_FILE: String {static}
+  -REQUIREMENTS_FILE: String {static}
+  -TRAININGS_FILE: String {static}
+  -ALLOCATIONS_FILE: String {static}
+  --
+  +loadTeachers(): List<Teacher>
+  +loadRequirements(): List<TeachingRequirement>
+  +loadTrainings(): List<Training>
+  +loadAllocations(): List<Allocation>
+  +saveTeachers(teachers: List<Teacher>): void
+  +saveRequirements(requirements: List<TeachingRequirement>): void
+  +saveTrainings(trainings: List<Training>): void
+  +saveAllocations(allocations: List<Allocation>): void
+  -readLines(filePath: String): List<String>
+  -writeLines(filePath: String, lines: List<String>): void
+  -parseLine(line: String): String[]
+  -toLine(fields: String...): String
+  -splitSemicolon(value: String): List<String>
+  -parseIntList(value: String): List<Integer>
+  -ensureDataDir(): void
+}
+
+' ============================================================
+'  MODEL CLASSES
+' ============================================================
+
+class Teacher {
+  -id: int
+  -name: String
+  -skills: List<String>
+  -availability: List<String>
+  --
+  +getId(): int
+  +setId(id: int): void
+  +getName(): String
+  +setName(name: String): void
+  +getSkills(): List<String>
+  +setSkills(skills: List<String>): void
+  +getAvailability(): List<String>
+  +setAvailability(availability: List<String>): void
+  +hasSkill(skill: String): boolean
+  +isAvailableOn(day: String): boolean
+  +skillsToString(): String
+  +availabilityToString(): String
+}
+
+class TeachingRequirement {
+  -id: int
+  -courseName: String
+  -semester: String
+  -requiredSkill: String
+  -dayOfWeek: String
+  -status: String
+  +STATUS_OPEN: String {static}
+  +STATUS_ASSIGNED: String {static}
+  --
+  +getId(): int
+  +setId(id: int): void
+  +getCourseName(): String
+  +setCourseName(courseName: String): void
+  +getSemester(): String
+  +getRequiredSkill(): String
+  +getDayOfWeek(): String
+  +getStatus(): String
+  +setStatus(status: String): void
+  +isOpen(): boolean
+}
+
+class Training {
+  -id: int
+  -name: String
+  -date: String
+  -skill: String
+  -participantIds: List<Integer>
+  --
+  +getId(): int
+  +setId(id: int): void
+  +getName(): String
+  +getDate(): String
+  +getSkill(): String
+  +getParticipantIds(): List<Integer>
+  +addParticipant(teacherId: int): void
+  +removeParticipant(teacherId: int): boolean
+  +hasParticipant(teacherId: int): boolean
+  +getParticipantCount(): int
+  +participantIdsToString(): String
+}
+
+class Allocation {
+  -id: int
+  -teacherId: int
+  -requirementId: int
+  --
+  +getId(): int
+  +setId(id: int): void
+  +getTeacherId(): int
+  +setTeacherId(teacherId: int): void
+  +getRequirementId(): int
+  +setRequirementId(requirementId: int): void
+}
+
+' ============================================================
+'  MANAGER CLASSES
+' ============================================================
+
+class TeacherManager {
+  -teachers: List<Teacher>
+  --
+  +TeacherManager(teachers: List<Teacher>)
+  +getTeachers(): List<Teacher>
+}
+
+class RequirementManager {
+  -requirements: List<TeachingRequirement>
+  --
+  +RequirementManager(requirements: List<TeachingRequirement>)
+  +getRequirements(): List<TeachingRequirement>
+}
+
+class TrainingManager {
+  -trainings: List<Training>
+  -teachers: List<Teacher>
+  --
+  +TrainingManager(trainings: List<Training>, teachers: List<Teacher>)
+  +createTraining(name: String, date: String, skill: String): Training
+  +listAllTrainings(): List<Training>
+  +findTrainingById(id: int): Training
+  +findTrainingsBySkill(skill: String): List<Training>
+  +assignTeacher(trainingId: int, teacherId: int): boolean
+  +removeTeacher(trainingId: int, teacherId: int): boolean
+  +updateTeacherSkills(trainingId: int): int
+  +displayTrainingDetails(training: Training): void
+  +displayAllTrainings(): void
+  -generateNextId(): int
+  -findTeacherById(id: int): Teacher
+}
+
+class StaffAllocator {
+  -teachers: List<Teacher>
+  -requirements: List<TeachingRequirement>
+  -allocations: List<Allocation>
+  --
+  +StaffAllocator(teachers: List<Teacher>, requirements: List<TeachingRequirement>, allocations: List<Allocation>)
+  +getAllocations(): List<Allocation>
+}
+
+' ============================================================
+'  UI + ENTRY POINT
+' ============================================================
+
+class MenuController {
+  -scanner: Scanner
+  --
+  +MenuController()
+  +run(): void
+  -printMainMenu(): void
+}
+
+class App {
+  +{static} main(args: String[]): void
+}
+
+' ============================================================
+'  RELATIONSHIPS
+' ============================================================
+
+' Interface implementation
+FileHandler ..|> DataStore : implements
+
+' App creates and uses
+App ..> DataStore : <<creates & uses>>
+App ..> TeacherManager : <<creates>>
+App ..> RequirementManager : <<creates>>
+App ..> TrainingManager : <<creates>>
+App ..> StaffAllocator : <<creates>>
+App ..> MenuController : <<creates>>
+
+' MenuController invokes managers
+MenuController ..> TeacherManager : <<uses>>
+MenuController ..> RequirementManager : <<uses>>
+MenuController ..> TrainingManager : <<uses>>
+MenuController ..> StaffAllocator : <<uses>>
+
+' Managers manage model objects
+TeacherManager --> "0..*" Teacher : manages
+RequirementManager --> "0..*" TeachingRequirement : manages
+TrainingManager --> "0..*" Training : manages
+TrainingManager --> "0..*" Teacher : reads/updates skills
+StaffAllocator --> "0..*" Teacher : reads
+StaffAllocator --> "0..*" TeachingRequirement : reads
+StaffAllocator --> "0..*" Allocation : manages
+
+' Training references teacher IDs
+Training ..> Teacher : references by ID
+
+' Allocation links teacher to requirement
+Allocation ..> Teacher : references by ID
+Allocation ..> TeachingRequirement : references by ID
+
+@enduml
