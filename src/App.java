@@ -13,16 +13,12 @@ import java.util.List;
  * Design note: App uses the DataStore interface (not FileHandler directly),
  * so switching to a database only requires changing one line here.
  *
- * TODO (Tianxin Han): integrate all managers into MenuController
- *
  * @author Tianxin Han (Group 23)
  */
 public class App {
 
     public static void main(String[] args) {
         // --- 1. Initialise data store ---
-        // To switch to a database in future, only change this line:
-        //   DataStore dataStore = new DatabaseHandler();
         DataStore dataStore = new FileHandler();
 
         // --- 2. Load all data into memory ---
@@ -45,11 +41,8 @@ public class App {
         StaffAllocator allocator = new StaffAllocator(teachers, requirements, allocations);
 
         // --- 4. Start interactive menu ---
-        // TODO (Tianxin): pass all managers to MenuController
-        // MenuController menu = new MenuController(teacherMgr, reqMgr, trainingMgr, allocator);
-        // menu.run();
-
-        System.out.println("\n[Placeholder] Menu not yet implemented. Exiting...");
+        MenuController menu = new MenuController(teacherMgr, reqMgr, trainingMgr, allocator);
+        menu.run();
 
         // --- 5. Save all data before exit ---
         dataStore.saveAll(teachers, requirements, trainings, allocations);
