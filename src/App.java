@@ -13,8 +13,6 @@ import java.util.List;
  * Design note: App uses the DataStore interface (not FileHandler directly),
  * so switching to a database only requires changing one line here.
  *
- * TODO (Tianxin Han): integrate all managers into MenuController
- *
  * @author Tianxin Han (Group 23)
  */
 public class App {
@@ -38,6 +36,18 @@ public class App {
         System.out.println("  Trainings:    " + trainings.size());
         System.out.println("  Allocations:  " + allocations.size());
 
+        // --- 2b. Sync requirement statuses from allocations ---
+        // Ensures requirements linked to an allocation are marked ASSIGNED,
+        // regardless of the status stored in the CSV file.
+        for (Allocation a : allocations) {
+            for (TeachingRequirement r : requirements) {
+                if (r.getId() == a.getRequirementId()) {
+                    r.setStatus(TeachingRequirement.STATUS_ASSIGNED);
+                    break;
+                }
+            }
+        }
+
         // --- 3. Create managers ---
         TeacherManager teacherMgr = new TeacherManager(teachers);
         RequirementManager reqMgr = new RequirementManager(requirements);
@@ -45,11 +55,8 @@ public class App {
         StaffAllocator allocator = new StaffAllocator(teachers, requirements, allocations);
 
         // --- 4. Start interactive menu ---
-        // TODO (Tianxin): pass all managers to MenuController
-        // MenuController menu = new MenuController(teacherMgr, reqMgr, trainingMgr, allocator);
-        // menu.run();
-
-        System.out.println("\n[Placeholder] Menu not yet implemented. Exiting...");
+        MenuController menu = new MenuController(teacherMgr, reqMgr, trainingMgr, allocator);
+        menu.run();
 
         // --- 5. Save all data before exit ---
         dataStore.saveAll(teachers, requirements, trainings, allocations);

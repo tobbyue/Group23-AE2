@@ -180,6 +180,10 @@ public class TrainingManager {
         }
 
         String skill = training.getSkill();
+        if (skill == null || skill.trim().isEmpty()) {
+            System.out.println("Error: Training '" + training.getName() + "' has no skill defined.");
+            return 0;
+        }
         int updatedCount = 0;
 
         for (int tid : training.getParticipantIds()) {

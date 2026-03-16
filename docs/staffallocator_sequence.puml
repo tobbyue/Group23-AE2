@@ -1,0 +1,106 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam roundcorner 8
+skinparam shadowing false
+skinparam sequenceArrowThickness 1.5
+skinparam sequenceParticipant underline
+
+skinparam sequence {
+  LifeLineBorderColor #2C3E50
+  ArrowColor #2C3E50
+  ParticipantBorderColor #2C3E50
+  ParticipantBackgroundColor #F8F9FA
+  ParticipantFontSize 13
+  ActorBorderColor #2C3E50
+  ActorBackgroundColor #F8F9FA
+}
+
+title **Group 23 — Staff Allocation Sequence Diagram**\n(User Story: As an administrator, I want to match suitable\npart-time teachers to teaching requirements.)
+
+actor Administrator
+participant MenuController
+participant StaffAllocator
+participant TeachingRequirement
+participant Teacher
+participant Allocation
+
+== Manual Allocation ==
+
+Administrator -> MenuController : select "Allocate Staff" → "Manual allocate"
+MenuController -> Administrator : prompt for teacherId and requirementId
+Administrator -> MenuController : enter teacherId, requirementId
+MenuController -> StaffAllocator : allocate(teacherId, requirementId)
+
+StaffAllocator -> StaffAllocator : findTeacherById(teacherId)
+StaffAllocator -> StaffAllocator : findRequirementById(requirementId)
+
+alt teacher or requirement not found
+    StaffAllocator --> MenuController : return false (invalid ID)
+    MenuController --> Administrator : "Invalid teacher ID or requirement ID."
+else requirement already assigned
+    StaffAllocator -> TeachingRequirement : getStatus()
+    TeachingRequirement --> StaffAllocator : "ASSIGNED"
+    StaffAllocator --> MenuController : return false
+    MenuController --> Administrator : "Requirement is already ASSIGNED."
+else teacher lacks required skill
+    StaffAllocator -> StaffAllocator : hasRequiredSkill(teacher, skill)
+    StaffAllocator --> MenuController : return false
+    MenuController --> Administrator : "Teacher does not have the required skill."
+else teacher unavailable on required day
+    StaffAllocator -> StaffAllocator : isAvailableOnDay(teacher, day)
+    StaffAllocator --> MenuController : return false
+    MenuController --> Administrator : "Teacher is not available on the required day."
+else teacher already assigned that day
+    StaffAllocator -> StaffAllocator : isAlreadyAssignedOnDay(teacher, day)
+    StaffAllocator --> MenuController : return false
+    MenuController --> Administrator : "Teacher already has another assignment on that day."
+else all checks pass
+    StaffAllocator -> StaffAllocator : generateNextId()
+    StaffAllocator -> Allocation : new Allocation(id, teacherId, requirementId)
+    StaffAllocator -> TeachingRequirement : setStatus(STATUS_ASSIGNED)
+    StaffAllocator --> MenuController : return true
+    MenuController --> Administrator : "Successfully allocated: [Teacher] -> [Course]"
+end
+
+== Auto Match ==
+
+Administrator -> MenuController : select "Auto match"
+MenuController -> Administrator : prompt for requirementId
+Administrator -> MenuController : enter requirementId
+MenuController -> StaffAllocator : autoMatch(requirement)
+
+loop for each Teacher in teachers list
+    StaffAllocator -> StaffAllocator : hasRequiredSkill(teacher, skill)
+    StaffAllocator -> StaffAllocator : isAvailableOnDay(teacher, day)
+    StaffAllocator -> StaffAllocator : isAlreadyAssignedOnDay(teacher, day)
+    alt suitable teacher found
+        StaffAllocator -> Allocation : new Allocation(id, teacher.id, req.id)
+        StaffAllocator -> TeachingRequirement : setStatus(STATUS_ASSIGNED)
+        StaffAllocator --> MenuController : return Teacher
+        MenuController --> Administrator : "Auto-matched: [Teacher] -> [Course]"
+    end
+end
+
+alt no suitable teacher found
+    StaffAllocator --> MenuController : return null
+    MenuController --> Administrator : "No suitable teacher found for: [Course]"
+end
+
+== Remove Allocation ==
+
+Administrator -> MenuController : select "Remove allocation"
+MenuController -> Administrator : prompt for allocationId
+Administrator -> MenuController : enter allocationId
+MenuController -> StaffAllocator : removeAllocation(allocationId)
+
+alt allocation not found
+    StaffAllocator --> MenuController : return false
+    MenuController --> Administrator : "Allocation not found."
+else found
+    StaffAllocator -> TeachingRequirement : setStatus(STATUS_OPEN)
+    StaffAllocator -> StaffAllocator : allocations.remove(target)
+    StaffAllocator --> MenuController : return true
+    MenuController --> Administrator : "Allocation [id] removed."
+end
+
+@enduml
