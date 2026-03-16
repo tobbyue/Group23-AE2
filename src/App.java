@@ -36,6 +36,18 @@ public class App {
         System.out.println("  Trainings:    " + trainings.size());
         System.out.println("  Allocations:  " + allocations.size());
 
+        // --- 2b. Sync requirement statuses from allocations ---
+        // Ensures requirements linked to an allocation are marked ASSIGNED,
+        // regardless of the status stored in the CSV file.
+        for (Allocation a : allocations) {
+            for (TeachingRequirement r : requirements) {
+                if (r.getId() == a.getRequirementId()) {
+                    r.setStatus(TeachingRequirement.STATUS_ASSIGNED);
+                    break;
+                }
+            }
+        }
+
         // --- 3. Create managers ---
         TeacherManager teacherMgr = new TeacherManager(teachers);
         RequirementManager reqMgr = new RequirementManager(requirements);

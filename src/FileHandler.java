@@ -42,7 +42,10 @@ public class FileHandler implements DataStore {
         // Skip header (line 0)
         for (int i = 1; i < lines.size(); i++) {
             String[] fields = parseLine(lines.get(i));
-            if (fields.length < 4) continue; // skip malformed lines
+            if (fields.length < 4) {
+                System.err.println("Warning: skipping malformed teacher record on line " + (i + 1));
+                continue;
+            }
 
             int id = Integer.parseInt(fields[0].trim());
             String name = fields[1].trim();
@@ -61,7 +64,10 @@ public class FileHandler implements DataStore {
 
         for (int i = 1; i < lines.size(); i++) {
             String[] fields = parseLine(lines.get(i));
-            if (fields.length < 6) continue;
+            if (fields.length < 6) {
+                System.err.println("Warning: skipping malformed requirement record on line " + (i + 1));
+                continue;
+            }
 
             int id = Integer.parseInt(fields[0].trim());
             String courseName = fields[1].trim();
@@ -83,7 +89,10 @@ public class FileHandler implements DataStore {
 
         for (int i = 1; i < lines.size(); i++) {
             String[] fields = parseLine(lines.get(i));
-            if (fields.length < 5) continue;
+            if (fields.length < 5) {
+                System.err.println("Warning: skipping malformed training record on line " + (i + 1));
+                continue;
+            }
 
             int id = Integer.parseInt(fields[0].trim());
             String name = fields[1].trim();
@@ -103,7 +112,10 @@ public class FileHandler implements DataStore {
 
         for (int i = 1; i < lines.size(); i++) {
             String[] fields = parseLine(lines.get(i));
-            if (fields.length < 3) continue;
+            if (fields.length < 3) {
+                System.err.println("Warning: skipping malformed allocation record on line " + (i + 1));
+                continue;
+            }
 
             int id = Integer.parseInt(fields[0].trim());
             int teacherId = Integer.parseInt(fields[1].trim());

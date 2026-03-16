@@ -274,14 +274,7 @@ public class MenuController {
             System.out.print("Enter requirement ID to auto-match: ");
             int requirementId = Integer.parseInt(scanner.nextLine().trim());
 
-            TeachingRequirement req = null;
-            for (TeachingRequirement r : requirementManager.getRequirements()) {
-                if (r.getId() == requirementId) {
-                    req = r;
-                    break;
-                }
-            }
-
+            TeachingRequirement req = requirementManager.findById(requirementId);
             if (req == null) {
                 System.out.println("Requirement not found.");
                 return;

@@ -46,14 +46,20 @@ public class Teacher {
 
     // ---------- Convenience ----------
 
-    /** Check whether this teacher possesses a given skill. */
+    /** Check whether this teacher possesses a given skill (case-insensitive). */
     public boolean hasSkill(String skill) {
-        return skills.contains(skill);
+        for (String s : skills) {
+            if (s.equalsIgnoreCase(skill)) return true;
+        }
+        return false;
     }
 
-    /** Check whether this teacher is available on a given day. */
+    /** Check whether this teacher is available on a given day (case-insensitive). */
     public boolean isAvailableOn(String day) {
-        return availability.contains(day);
+        for (String d : availability) {
+            if (d.equalsIgnoreCase(day)) return true;
+        }
+        return false;
     }
 
     // ---- CSV helpers (used by FileHandler) ----
