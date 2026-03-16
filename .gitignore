@@ -22,4 +22,7 @@ out/
 .DS_Store
 Thumbs.db
 
+# Claude Code local configuration
+.claude/
+
 # Do NOT ignore data/ — sample CSV files should be tracked
