@@ -49,6 +49,8 @@ public class MenuController {
                     System.out.println("Invalid choice. Please try again.");
             }
         }
+
+        scanner.close();
     }
 
     private void printMainMenu() {

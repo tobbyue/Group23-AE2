@@ -19,6 +19,8 @@ public class App {
 
     public static void main(String[] args) {
         // --- 1. Initialise data store ---
+        // To switch to a database in future, only change this line:
+        //   DataStore dataStore = new DatabaseHandler();
         DataStore dataStore = new FileHandler();
 
         // --- 2. Load all data into memory ---
