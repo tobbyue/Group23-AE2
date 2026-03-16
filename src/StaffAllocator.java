@@ -45,7 +45,7 @@ public class StaffAllocator {
             System.out.println("Invalid teacher ID or requirement ID.");
             return false;
         }
-        if (!req.getStatus().equals("OPEN")) {
+        if (!req.getStatus().equals(TeachingRequirement.STATUS_OPEN)) {
             System.out.println("Requirement is already ASSIGNED.");
             return false;
         }
@@ -64,7 +64,7 @@ public class StaffAllocator {
 
         int newId = generateNextId();
         allocations.add(new Allocation(newId, teacherId, requirementId));
-        req.setStatus("ASSIGNED");
+        req.setStatus(TeachingRequirement.STATUS_ASSIGNED);
         System.out.println("Successfully allocated: " + teacher.getName()
                 + " -> " + req.getCourseName());
         return true;
@@ -77,7 +77,7 @@ public class StaffAllocator {
      * for a given requirement.
      */
     public Teacher autoMatch(TeachingRequirement req) {
-        if (!req.getStatus().equals("OPEN")) {
+        if (!req.getStatus().equals(TeachingRequirement.STATUS_OPEN)) {
             System.out.println("Requirement is already ASSIGNED.");
             return null;
         }
@@ -88,7 +88,7 @@ public class StaffAllocator {
 
                 int newId = generateNextId();
                 allocations.add(new Allocation(newId, teacher.getId(), req.getId()));
-                req.setStatus("ASSIGNED");
+                req.setStatus(TeachingRequirement.STATUS_ASSIGNED);
                 System.out.println("Auto-matched: " + teacher.getName()
                         + " -> " + req.getCourseName());
                 return teacher;
@@ -105,12 +105,14 @@ public class StaffAllocator {
             System.out.println("No allocations found.");
             return;
         }
-        System.out.println("ID | TeacherID | RequirementID");
-        System.out.println("--------------------------------");
+        System.out.println("ID | Teacher              | Course");
+        System.out.println("--------------------------------------------------");
         for (Allocation a : allocations) {
-            System.out.println(a.getId() + "  | "
-                    + a.getTeacherId() + "         | "
-                    + a.getRequirementId());
+            Teacher t = findTeacherById(a.getTeacherId());
+            TeachingRequirement r = findRequirementById(a.getRequirementId());
+            String teacherName = (t != null) ? t.getName() : "ID:" + a.getTeacherId();
+            String courseName  = (r != null) ? r.getCourseName() : "ID:" + a.getRequirementId();
+            System.out.printf("%-3d| %-20s | %s%n", a.getId(), teacherName, courseName);
         }
     }
 
@@ -131,7 +133,7 @@ public class StaffAllocator {
         // Reset requirement status back to OPEN
         TeachingRequirement req = findRequirementById(target.getRequirementId());
         if (req != null) {
-            req.setStatus("OPEN");
+            req.setStatus(TeachingRequirement.STATUS_OPEN);
         }
         allocations.remove(target);
         System.out.println("Allocation " + allocationId + " removed.");
