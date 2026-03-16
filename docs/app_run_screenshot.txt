@@ -1,0 +1,91 @@
+========================================
+  Part-Time Teacher Management System — Run Output
+  Author: Tianxin Han (Group 23)
+  Date:   2026-03-16
+========================================
+
+$ java -cp out App
+
+Data loaded successfully.
+  Teachers:     3
+  Requirements: 3
+  Trainings:    2
+  Allocations:  1
+
+========================================
+ Part-Time Teacher Management System
+========================================
+ 1. Manage Teachers
+ 2. Manage Teaching Requirements
+ 3. Allocate Staff
+ 4. Manage Training
+ 5. Exit
+Enter choice: 4
+
+--- Training Management ---
+ 1. List all trainings
+ 2. Create training
+ 3. Assign teacher to training
+ 4. Update teacher skills after training
+ 5. Back to main menu
+Enter choice: 1
+
+===== All Training Sessions =====
+ID   Name                   Date         Skill        #Part
+------------------------------------------------------------
+1    Java Refresher         2026-03-10   Java         2
+2    SQL Basics             2026-03-15   SQL          1
+
+Enter choice: 5   [Back to main menu]
+
+========================================
+ Part-Time Teacher Management System
+========================================
+Enter choice: 2
+
+--- Requirement Management ---
+ 1. List all requirements
+ 2. Add requirement
+ 3. Update requirement
+ 4. Remove requirement
+ 5. Filter by status
+ 6. Back to main menu
+Enter choice: 1
+
+ID | Course              | Semester  | Skill  | Day | Status
+--------------------------------------------------------------
+1  | Intro to Java       | 2026-S1   | Java   | Mon | ASSIGNED
+2  | Database Systems    | 2026-S1   | SQL    | Wed | ASSIGNED
+3  | Advanced Python     | 2026-S2   | Python | Fri | OPEN
+
+Enter choice: 6   [Back to main menu]
+
+========================================
+ Part-Time Teacher Management System
+========================================
+Enter choice: 3
+
+--- Staff Allocation ---
+ 1. List all allocations
+ 2. Manual allocate (teacher to requirement)
+ 3. Auto match (find best teacher for requirement)
+ 4. Remove allocation
+ 5. Back to main menu
+Enter choice: 1
+
+ID | Teacher              | Course
+--------------------------------------------------
+1  | John Smith           | Intro to Java
+
+Enter choice: 3
+Enter requirement ID to auto-match: 3
+Auto-matched: Bob Wilson -> Advanced Python
+
+Enter choice: 5   [Back to main menu]
+
+========================================
+ Part-Time Teacher Management System
+========================================
+Enter choice: 5
+Exiting system...
+Data saved successfully. Goodbye!
