@@ -62,8 +62,8 @@ public class TeachingRequirement {
     public String getDayOfWeek()     { return dayOfWeek; }
     public void   setDayOfWeek(String dayOfWeek) {
         if (!VALID_DAYS.contains(dayOfWeek)) {
-            throw new IllegalArgumentException("Invalid day: " + dayOfWeek
-                    + ". Must be one of " + VALID_DAYS);
+            System.out.println("Warning: unexpected day '" + dayOfWeek
+                    + "'. Expected one of " + VALID_DAYS);
         }
         this.dayOfWeek = dayOfWeek;
     }
@@ -71,8 +71,8 @@ public class TeachingRequirement {
     public String getStatus()        { return status; }
     public void   setStatus(String status) {
         if (!STATUS_OPEN.equals(status) && !STATUS_ASSIGNED.equals(status)) {
-            throw new IllegalArgumentException("Invalid status: " + status
-                    + ". Must be OPEN or ASSIGNED.");
+            System.out.println("Warning: unexpected status '" + status
+                    + "'. Expected OPEN or ASSIGNED.");
         }
         this.status = status;
     }

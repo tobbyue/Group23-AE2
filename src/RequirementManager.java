@@ -58,11 +58,6 @@ public class RequirementManager {
 
     // ---------- Read ----------
 
-    /** Return all requirements. */
-    public List<TeachingRequirement> listAll() {
-        return requirements;
-    }
-
     /** Find a single requirement by ID, or null if not found. */
     public TeachingRequirement findById(int id) {
         for (TeachingRequirement r : requirements) {
