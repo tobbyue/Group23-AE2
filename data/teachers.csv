@@ -2,3 +2,5 @@ id,name,skills,availability
 1,John Smith,Java;Python;SQL,Mon;Tue;Wed
 2,Jane Doe,Java;C++,Thu;Fri
 3,Bob Wilson,Python;Database,Mon;Wed;Fri
+4,Alice Chen,Mathematics;Statistics,Tue;Thu
+5,David Park,Java;Software Engineering,Mon;Wed
