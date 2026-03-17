@@ -66,9 +66,100 @@ public class MenuController {
     }
 
     private void manageTeachers() {
+        boolean back = false;
+
+        while (!back) {
+            printTeachersMenu();
+            String choice = scanner.nextLine().trim();
+
+            switch (choice) {
+                case "1":
+                    teacherManager.printAll();
+                    break;
+                case "2":
+                    addTeacher();
+                    break;
+                case "3":
+                    removeTeacher();
+                    break;
+                case "4":
+                    searchTeacherBySkill();
+                    break;
+                case "5":
+                    back = true;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private void printTeachersMenu() {
         System.out.println("\n--- Teacher Management ---");
-        System.out.println("Current loaded teacher count: " + teacherManager.getTeachers().size());
-        System.out.println("[Teacher management functions will be added here]");
+        System.out.println(" 1. List all teachers");
+        System.out.println(" 2. Add teacher");
+        System.out.println(" 3. Remove teacher");
+        System.out.println(" 4. Search by skill");
+        System.out.println(" 5. Back to main menu");
+        System.out.print("Enter choice: ");
+    }
+
+    private void addTeacher() {
+        System.out.print("Enter teacher name: ");
+        String name = scanner.nextLine().trim();
+        if (name.isEmpty()) {
+            System.out.println("Name cannot be empty.");
+            return;
+        }
+
+        Teacher teacher = new Teacher(name);
+
+        System.out.print("Enter skills (semicolon-separated, e.g. Java;Python): ");
+        String skillsInput = scanner.nextLine().trim();
+        for (String s : skillsInput.split(";")) {
+            teacher.addSkill(s.trim());
+        }
+
+        System.out.print("Enter availability (semicolon-separated, e.g. Mon;Wed;Fri): ");
+        String availInput = scanner.nextLine().trim();
+        for (String a : availInput.split(";")) {
+            teacher.addAvailability(a.trim());
+        }
+
+        int id = teacherManager.addTeacher(teacher);
+        System.out.println("Teacher added with ID " + id + ": " + teacher);
+    }
+
+    private void removeTeacher() {
+        try {
+            System.out.print("Enter teacher ID to remove: ");
+            int id = Integer.parseInt(scanner.nextLine().trim());
+
+            boolean removed = teacherManager.removeTeacher(id);
+            System.out.println(removed ? "Teacher removed." : "Teacher not found.");
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter numbers only.");
+        }
+    }
+
+    private void searchTeacherBySkill() {
+        System.out.print("Enter skill to search: ");
+        String skill = scanner.nextLine().trim();
+
+        java.util.List<Teacher> result = teacherManager.searchBySkill(skill);
+        if (result.isEmpty()) {
+            System.out.println("No teachers found with skill: " + skill);
+            return;
+        }
+        System.out.println("Teachers with skill '" + skill + "':");
+        System.out.printf("  %-5s %-20s %-30s %-20s%n", "ID", "Name", "Skills", "Availability");
+        System.out.println("  " + "-".repeat(78));
+        for (Teacher t : result) {
+            System.out.printf("  %-5d %-20s %-30s %-20s%n",
+                    t.getId(), t.getName(),
+                    String.join(";", t.getSkills()),
+                    String.join(";", t.getAvailability()));
+        }
     }
 
     private void manageRequirements() {

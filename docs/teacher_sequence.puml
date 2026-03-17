@@ -1,0 +1,81 @@
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam roundcorner 8
+skinparam shadowing false
+skinparam sequenceArrowThickness 1.5
+skinparam sequenceParticipant underline
+
+skinparam sequence {
+  LifeLineBorderColor #2C3E50
+  ArrowColor #2C3E50
+  ParticipantBorderColor #2C3E50
+  ParticipantBackgroundColor #F8F9FA
+  ParticipantFontSize 13
+  ActorBorderColor #2C3E50
+  ActorBackgroundColor #F8F9FA
+}
+
+title **Group 23 — Teacher Module Sequence Diagram**\n(User Story: As an administrator, I want to manage\npart-time teachers — register, search, and remove.)
+
+actor Administrator
+participant MenuController
+participant TeacherManager
+participant Teacher
+
+== Register a New Teacher (US-T1) ==
+
+Administrator -> MenuController : select "Manage Teachers" → "Add teacher"
+MenuController -> Administrator : prompt for name, skills, availability
+Administrator -> MenuController : enter name, skills, availability
+MenuController -> Teacher : new Teacher(name)
+MenuController -> Teacher : addSkill(skill) [for each skill]
+MenuController -> Teacher : addAvailability(day) [for each day]
+MenuController -> TeacherManager : addTeacher(teacher)
+TeacherManager -> Teacher : setId(nextId++)
+TeacherManager -> TeacherManager : teachers.add(teacher)
+TeacherManager --> MenuController : return assigned id
+MenuController --> Administrator : "Teacher added with ID [id]"
+
+== Search Teachers by Skill (US-T2) ==
+
+Administrator -> MenuController : select "Search by skill"
+MenuController -> Administrator : prompt for skill keyword
+Administrator -> MenuController : enter skill (e.g. "Java")
+MenuController -> TeacherManager : searchBySkill(skill)
+
+loop for each Teacher in list
+    TeacherManager -> Teacher : hasSkill(skill)
+    Teacher --> TeacherManager : true / false
+end
+
+alt matches found
+    TeacherManager --> MenuController : List<Teacher>
+    MenuController --> Administrator : display formatted table of matching teachers
+else no matches
+    TeacherManager --> MenuController : empty list
+    MenuController --> Administrator : "No teachers found with skill: [skill]"
+end
+
+== List All Teachers ==
+
+Administrator -> MenuController : select "List all teachers"
+MenuController -> TeacherManager : printAll()
+TeacherManager --> Administrator : formatted table (ID | Name | Skills | Availability)
+
+== Remove a Teacher (US-T3) ==
+
+Administrator -> MenuController : select "Remove teacher"
+MenuController -> Administrator : prompt for teacher ID
+Administrator -> MenuController : enter id
+MenuController -> TeacherManager : removeTeacher(id)
+
+alt teacher found
+    TeacherManager -> TeacherManager : teachers.removeIf(t.id == id)
+    TeacherManager --> MenuController : true
+    MenuController --> Administrator : "Teacher removed."
+else not found
+    TeacherManager --> MenuController : false
+    MenuController --> Administrator : "Teacher not found."
+end
+
+@enduml

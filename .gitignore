@@ -25,4 +25,8 @@ Thumbs.db
 # Claude Code local configuration
 .claude/
 
+# Report files — submitted separately, not tracked in repo
+Group23_SEIT_AE2_Report.md
+Group23_SEIT_AE2_Report.pdf
+
 # Do NOT ignore data/ — sample CSV files should be tracked
