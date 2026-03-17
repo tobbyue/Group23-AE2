@@ -191,4 +191,14 @@ public class Teacher {
 
     /** Returns a defensive copy of the availability list. */
     public List<String> getAvailability() { return new ArrayList<>(availability); }
+
+    // -------------------------------------------------------------------------
+    // CSV helper aliases — used by FileHandler.saveTeachers()
+    // -------------------------------------------------------------------------
+
+    /** Semicolon-joined skills string for CSV output. */
+    public String skillsToString()       { return String.join(";", skills); }
+
+    /** Semicolon-joined availability string for CSV output. */
+    public String availabilityToString() { return String.join(";", availability); }
 }

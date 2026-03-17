@@ -31,6 +31,20 @@ public class TeacherManager {
         this.nextId   = 1;
     }
 
+    /**
+     * Compatibility constructor — accepts the shared list from App.java.
+     * Stores a reference (not a copy) so that App.saveAll() reflects
+     * any adds/removes made through this manager.
+     */
+    public TeacherManager(List<Teacher> teachers) {
+        this.teachers = (teachers != null) ? teachers : new ArrayList<>();
+        int maxId = 0;
+        for (Teacher t : this.teachers) {
+            if (t.getId() > maxId) maxId = t.getId();
+        }
+        this.nextId = maxId + 1;
+    }
+
     // -------------------------------------------------------------------------
     // Initialisation — called by FileHandler after loading teachers.csv
     // -------------------------------------------------------------------------
@@ -88,6 +102,14 @@ public class TeacherManager {
      */
     public List<Teacher> getAllTeachers() {
         return new ArrayList<>(teachers);
+    }
+
+    /**
+     * Returns the internal teacher list (shared reference).
+     * Alias for backward compatibility with App.java and MenuController.
+     */
+    public List<Teacher> getTeachers() {
+        return teachers;
     }
 
     /**

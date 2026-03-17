@@ -189,7 +189,7 @@ public class TrainingManager {
         for (int tid : training.getParticipantIds()) {
             Teacher teacher = findTeacherById(tid);
             if (teacher != null && !teacher.hasSkill(skill)) {
-                teacher.getSkills().add(skill);
+                teacher.addSkill(skill);
                 updatedCount++;
                 System.out.println("  Skill '" + skill + "' added to teacher '"
                         + teacher.getName() + "'.");
